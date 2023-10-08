@@ -1,9 +1,9 @@
 import openai
-import asyncio
+import os
 
-from shared.config import OPENAI_KEY
+# from shared.config import *
 
-openai.api_key = OPENAI_KEY
+openai.api_key = os.getenv("openai_key")
 
 
 
