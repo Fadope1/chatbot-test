@@ -1,5 +1,6 @@
 import streamlit as st
 import requests
+import json
 
 st.title("💬 Chatbot")
 
@@ -30,8 +31,18 @@ if st.session_state["in_progress"] is False:  # Only show input if no message is
         for message in response:
             message = message.decode()
             full_message += message
-            ongoing_message.chat_message("assistant").write(full_message)
 
-        st.session_state.messages.append({"role": "assistant", "content": full_message})
+        # Check if the response contains line chart data
+        try:
+            chart_data = json.loads(full_message)
+            if chart_data.get("type") == "line":
+                st.line_chart({"x": chart_data["x"], "y": chart_data["y"]})
+                st.session_state.messages.append({"role": "assistant", "content": "Here is the line chart:"})
+            else:
+                ongoing_message.chat_message("assistant").write(full_message)
+                st.session_state.messages.append({"role": "assistant", "content": full_message})
+        except json.JSONDecodeError:
+            ongoing_message.chat_message("assistant").write(full_message)
+            st.session_state.messages.append({"role": "assistant", "content": full_message})
 
         st.session_state["in_progress"] = False  # Reset the flag
