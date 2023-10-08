@@ -9,4 +9,4 @@ router = APIRouter()
 
 @router.post("/ask-me")
 async def ask_me(body: OpenAIRequestSchema):
-    return StreamingResponse(generate_sentence(body.prompt))
+    return StreamingResponse(generate_sentence(**body.model_dump()))

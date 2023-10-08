@@ -21,7 +21,11 @@ if st.session_state["in_progress"] is False:  # Only show input if no message is
 
         ongoing_message = st.empty()
 
-        response = requests.post("http://localhost:8080/api/v1/ask-me", json={"prompt": prompt}, stream=True)
+        body = {
+            "prompt": prompt,
+            "history": st.session_state.messages
+        }
+        response = requests.post("http://localhost:8080/api/v1/ask-me", json=body, stream=True)
         full_message = ""
         for message in response:
             message = message.decode()
